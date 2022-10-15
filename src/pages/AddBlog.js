@@ -9,7 +9,9 @@ const AddBlog = ({ blogPosts, setBlogPosts }) => {
     const [body, setBody] = useState('');
     const [userId, setUserId] = useState(0);
     const [id, setId] = useState(0);
+
     const [seed, setSeed] = useState(1);
+    const [warn, setWarn] = useState('');
     const [message, setMessage] = useState('');
 
 
@@ -24,14 +26,23 @@ const AddBlog = ({ blogPosts, setBlogPosts }) => {
     // (blogPosts[blogPosts.length - 1].id + 1)
 
     useEffect(() => {
-        setTimeout(() => {
-            if (message) {
+        if (message) {
+            setTimeout(() => {
                 navigate('/');
                 setMessage('');
-            }
-        }, 4000)
+            }, 4000)
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [message])
+
+    useEffect(() => {
+        if (warn) {
+            setTimeout(() => {
+                setWarn('');
+
+            }, 4000)
+        }
+    }, [warn]);
 
 
     const submitBlog = async () => {
@@ -61,23 +72,37 @@ const AddBlog = ({ blogPosts, setBlogPosts }) => {
 
     function handleSubmit(event) {
         event.preventDefault();
-        setBlogPosts(prevState => [...prevState, newBlog]);
-        setId(blogPosts[blogPosts.length - 1].id + 1);
-        submitBlog();
-        console.log("Submitted")
+
+        if (title === "" || body === "" || userId === "") {
+            setWarn("All fields are mandatory");
+            return;
+        }
+
+
+
+        try {
+            setBlogPosts(prevState => [...prevState, newBlog]);
+            setId(blogPosts[blogPosts.length - 1].id + 1);
+            submitBlog();
+            console.log("Submitted");
+            setMessage("Blog Published Successfully")
+
+        } catch (error) {
+            setWarn(error.message);
+        }
 
         setSeed(Math.random());
-        setMessage("Blog Published Successfully")
+
 
     }
 
 
 
     return (
-        <div className='font-poppins pt-8 px-8'>
+        <div className='font-poppins pt-8 px-8 min-w-[370px] max-w-[1600px] mx-auto'>
 
             <Link to='/' >
-                <h1 className='text-7xl font-semibold uppercase pb-2'>The Mockup Blog</h1>
+                <h1 className='text-5xl sm:text-6xl text-center md:text-left md:text-7xl font-semibold uppercase pb-2'>The Mockup Blog</h1>
             </Link>
 
             <hr className='pt-2' />
@@ -91,7 +116,10 @@ const AddBlog = ({ blogPosts, setBlogPosts }) => {
                 </div>
             }
 
-            <form className='' key={seed} onSubmit={handleSubmit} >
+            {warn && <div className='pt-4 text-sm text-center text-gray-400'> {warn}</div>
+            }
+
+            <form className='max-w-6xl mx-auto' key={seed} onSubmit={handleSubmit} >
 
                 <div>
 

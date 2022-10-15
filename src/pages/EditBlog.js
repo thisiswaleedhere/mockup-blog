@@ -9,18 +9,29 @@ const EditBlog = () => {
     const [title, setTitle] = useState('');
     const [body, setBody] = useState('');
     const [userId, setUserId] = useState(0);
+
+    const [warn, setWarn] = useState('');
     const [seed, setSeed] = useState(1);
     const [message, setMessage] = useState('');
 
     useEffect(() => {
-        setTimeout(() => {
-            if (message) {
+        if (message) {
+            setTimeout(() => {
                 navigate('/');
                 setMessage('');
-            }
-        }, 4000)
+            }, 4000)
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [message])
+
+    useEffect(() => {
+        if (warn) {
+            setTimeout(() => {
+                setWarn('');
+
+            }, 4000)
+        }
+    }, [warn]);
 
 
     useEffect(() => {
@@ -42,8 +53,6 @@ const EditBlog = () => {
 
 
 
-
-
     const newBlog = {
         userId,
         id,
@@ -61,11 +70,23 @@ const EditBlog = () => {
 
     function handleEdit(event) {
         event.preventDefault();
-        editBlog();
-        setTitle('');
-        setBody('');
-        setUserId('');
-        setMessage("Post Edited Successfully")
+
+        if (title === "" || body === "" || userId === "") {
+            setWarn("All fields are mandatory");
+            return;
+        }
+        try {
+            editBlog();
+            setTitle('');
+            setBody('');
+            setUserId('');
+            setMessage("Post Edited Successfully")
+
+        } catch (error) {
+            setWarn(error.message);
+
+        }
+
     }
 
     const editBlog = async () => {
@@ -85,9 +106,9 @@ const EditBlog = () => {
 
 
     return (
-        <div className='font-poppins pt-8 px-8'>
+        <div className='font-poppins pt-8 px-8  min-w-[370px] max-w-[1600px] mx-auto'>
             <Link to='/' >
-                <h1 className='text-7xl font-semibold uppercase pb-2'>The Mockup Blog</h1>
+                <h1 className='text-5xl sm:text-6xl text-center md:text-left md:text-7xl font-semibold uppercase pb-2'>The Mockup Blog</h1>
             </Link>
 
             <hr className='pt-2' />
@@ -100,8 +121,10 @@ const EditBlog = () => {
                     <div className='text-sm text-center text-gray-400'> Redirecting you to Homepage.</div>
                 </div>
             }
+            {warn && <div className='pt-4 text-sm text-center text-gray-400'> {warn}</div>
+            }
 
-            <form className='' key={seed} onSubmit={handleEdit}  >
+            <form className='max-w-6xl mx-auto' key={seed} onSubmit={handleEdit}  >
                 <div>
 
                     <div className="mt-3">
