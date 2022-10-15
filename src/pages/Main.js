@@ -16,7 +16,7 @@ const Main = ({ blogPosts, setBlogPosts }) => {
 
     const callBackFunction = entries => {
         const [entry] = entries;
-        if (entry.isIntersecting) { console.log('there you go') }
+        if (entry.isIntersecting) { setNum(prevNum => prevNum + 1) }
     }
 
     const options = useMemo(() => {
@@ -72,7 +72,7 @@ const Main = ({ blogPosts, setBlogPosts }) => {
 
                 })
             }
-            <footer ref={bottomRef}></footer>
+            <footer className='text-center text-gray-400 text-sm py-6 mb-2' ref={bottomRef}>The Mockup Blog</footer>
 
 
         </div >
